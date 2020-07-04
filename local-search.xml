@@ -5,8 +5,8 @@
   
   <entry>
     <title>Blog Template</title>
-    <link href="/2020/07/05/Blog-Template/"/>
-    <url>/2020/07/05/Blog-Template/</url>
+    <link href="/2020/07/04/Blog-Template/"/>
+    <url>/2020/07/04/Blog-Template/</url>
     
     <content type="html"><![CDATA[<h1 id="Title1"><a href="#Title1" class="headerlink" title="Title1"></a>Title1</h1><h2 id="Title2"><a href="#Title2" class="headerlink" title="Title2"></a>Title2</h2><h3 id="Title3"><a href="#Title3" class="headerlink" title="Title3"></a>Title3</h3><pre><code class="hljs bash">Equations Test</code></pre><div class="note note-success">            <p>This is test</p>          </div><span class="label label-primary">labeltest</span>]]></content>
     
