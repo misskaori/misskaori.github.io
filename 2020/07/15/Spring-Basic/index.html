@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/icon.png">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="WeizheLIU">
+  <meta name="keywords" content="">
+  <title>Spring Basic - Bean - misskaori</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>WeizheLIU</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/Miyazono%20Kaori.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-15 19:56">
+      July 15, 2020 pm
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="iconfont icon-arrowdown"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h1 id="Spring-Basic-Bean"><a href="#Spring-Basic-Bean" class="headerlink" title="Spring Basic - Bean"></a>Spring Basic - Bean</h1><p>The Spring framework consists of three core components:</p>
+<blockquote>
+<ul>
+<li><strong>Context</strong><br>The role of Context is to discover the relationship between each Bean. And it will establish and maintain this relationship for beans. So Context is a collection of Bean relationships, this relationship combination is also known as the IOC container.  </li>
+<li><strong>Core</strong><br>The role of the Core is to discover, establish and maintain a series of tools needed for the relationship between each Bean.</li>
+<li><strong>Bean</strong><br>Bean is the most core component in Spring. In fact, Spring is Bean oriented programming(BOP). Spring wraps Object in Bean, and then implements a series of operations on Bean to achieve dependency injection(DI).  </li>
+</ul>
+</blockquote>
+<p>This blog will mainly explain the generation mode and life cycle of Bean. After that, it can be easier to understand the implementation mechanism of Spring IOC.</p>
+<h2 id="The-Generation-Mode-of-Bean"><a href="#The-Generation-Mode-of-Bean" class="headerlink" title="The Generation Mode of Bean"></a>The Generation Mode of Bean</h2><p>The creation of Spring Bean is a typical factory pattern. And the factory uses reflection technology to instantiate Bean. Compared with the ordinary factory model, the use of reflection technology can effectively improve the flexibility and maintainability of Spring source code.<br>First of all, let us take a look at the factory mode when <strong>reflection technology is not used</strong>.  </p>
+<pre><code class="hljs bash">interface fruit&#123;
+    public abstract void eat();
+&#125; 
+class Apple implements fruit&#123;
+     public void <span class="hljs-function"><span class="hljs-title">eat</span></span>()&#123;
+         System.out.println(<span class="hljs-string">"Apple"</span>);
+     &#125;
+&#125; 
+class Orange implements fruit&#123;
+     public void <span class="hljs-function"><span class="hljs-title">eat</span></span>()&#123;
+         System.out.println(<span class="hljs-string">"Orange"</span>);
+     &#125;
+&#125;
+
+
+class Factory&#123;
+     public static fruit getInstance(String fruitName)&#123;
+         fruit f=null;
+         //Factory can product new <span class="hljs-built_in">type</span> instances by adding the following conditional statements
+         <span class="hljs-keyword">if</span>(<span class="hljs-string">"Apple"</span>.equals(fruitName))&#123;
+             f=new Apple();
+         &#125;
+         <span class="hljs-keyword">if</span>(<span class="hljs-string">"Orange"</span>.equals(fruitName))&#123;
+             f=new Orange();
+         &#125;
+         <span class="hljs-built_in">return</span> f;
+     &#125;
+&#125;
+//Using factory pattern to build instance
+class hello&#123;
+     public static void main(String[] a)&#123;
+         fruit f=Factory.getInstance(<span class="hljs-string">"Orange"</span>);
+         f.eat();
+     &#125;
+&#125;</code></pre>
+<p>In the future, every time you want the factory to produce a new type instance, you need to override the factory method. If there are too many kinds of new subclasses to be added, the changes to the factory will be very large.<br>Next let us take a look at the factory mode when <strong>reflection technology is used</strong>.</p>
+<pre><code class="hljs bash">interface fruit&#123;
+     public abstract void eat();
+&#125;
+class Apple implements fruit&#123;
+public void <span class="hljs-function"><span class="hljs-title">eat</span></span>()&#123;
+         System.out.println(<span class="hljs-string">"Apple"</span>);
+     &#125;
+&#125;
+class Orange implements fruit&#123;
+public void <span class="hljs-function"><span class="hljs-title">eat</span></span>()&#123;
+        System.out.println(<span class="hljs-string">"Orange"</span>);
+    &#125;
+&#125;
+class Factory&#123;
+    public static fruit getInstance(String ClassName)&#123;
+        fruit f=null;
+        try&#123;
+            //Construct a new instance from a string of class name
+            f=(fruit)Class.forName(ClassName).newInstance();
+        &#125;catch (Exception e) &#123;
+            e.printStackTrace();
+        &#125;
+        <span class="hljs-built_in">return</span> f;
+    &#125;
+&#125;
+//Using factory pattern to build instance
+class hello&#123;
+    public static void main(String[] a)&#123;
+        //Enter string of class name
+        fruit f=Factory.getInstance(<span class="hljs-string">"Reflect.Apple"</span>);
+        <span class="hljs-keyword">if</span>(f!=null)&#123;
+            f.eat();
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>After using the reflection technology, we no longer need to rewrite the factory method, the reflection technology will map the internal attribute method of the class into a Java object based on the bytecode information of the class. <strong>So this kind of factory model is more maintainable for developer</strong>. The IOC container uses this factory model and produces the objects we need according to the definition of the configuration file. But compared to the normal way of producing objects, the speed of reflection generation will be <strong>slower</strong>.</p>
+<h2 id="Inversion-of-Control-IOC"><a href="#Inversion-of-Control-IOC" class="headerlink" title="Inversion of Control - IOC"></a>Inversion of Control - IOC</h2><p>IOC (Inversion of Control) contains two aspects: </p>
+<blockquote>
+<ul>
+<li><strong>Control</strong><br>The control right of current object.</li>
+<li><strong>Inversion</strong><br>This control right is not ever managed by the current object, but by IOC container.  </li>
+</ul>
+</blockquote>
+<p>Simply put, the effect of IOC is to hand over the objects we need to a third-party IOC container to generate and we do not need to care about how they are produced. All we need to do is focus on the implementation of code logic. Compared to developers manually creating objects, IOC reverses the power of creating objects, that is, this power is assigned to Spring. Using IOC has the following benefits:  </p>
+<blockquote>
+<ul>
+<li><strong>No need to create new objects by yourself, dependency injection(DI) can be done in IOC container.</strong></li>
+<li><strong>The objects we need can be defined in the configuration file. Unified configuration, easy to modify.</strong>  </li>
+</ul>
+</blockquote>
+<p>The IOC container is actually a relationship network about beans built by Context, Core and Bean. The entry point of this relationship construction is in the <strong>refresh</strong> method of the <strong>AbstractApplicationContext</strong> class. Code is showed as below:</p>
+<pre><code class="hljs bash">public void refresh() throws BeansException, IllegalStateException &#123;
+		synchronized (this.startupShutdownMonitor) &#123;
+			// Prepare this context <span class="hljs-keyword">for</span> refreshing.
+			prepareRefresh();
+ 
+			// Tell the subclass to refresh the internal bean factory.
+			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+ 
+			// Prepare beanfactory to use this context. Do some preparatory work, such as classloader, beanfactoryPostProcessor, etc.
+			prepareBeanFactory(beanFactory);
+ 
+			try &#123;
+				//Allow subclasses of context to execute postProcessor
+				postProcessBeanFactory(beanFactory);
+ 
+				// Start execution of BeanFactoryPostProcessors registered to this context
+				invokeBeanFactoryPostProcessors(beanFactory);
+ 
+				// Start registering BeanPostProcessor to intercept the initialization process of other beans
+				registerBeanPostProcessors(beanFactory);
+ 
+				// Initialize the message <span class="hljs-built_in">source</span>
+				initMessageSource();
+ 
+				//Register a broadcast <span class="hljs-built_in">set</span> of contextual events
+				initApplicationEventMulticaster();
+ 
+				//Initialize some special beans
+				onRefresh();
+ 
+				//Query and verify the listener and register
+				registerListeners();
+ 
+				// Instantiate all beans that are non-lazy-init
+				finishBeanFactoryInitialization(beanFactory);
+ 
+				//Publish all applications
+				finishRefresh();
+			&#125;
+ 
+			catch (BeansException ex) &#123;
+				// Destroy already created singletons to avoid dangling resources.
+				destroyBeans();
+ 
+				// Reset <span class="hljs-string">'active'</span> flag.
+				cancelRefresh(ex);
+ 
+				// Propagate exception to <span class="hljs-built_in">caller</span>.
+				throw ex;
+			&#125;
+		&#125;
+	&#125;</code></pre>
+<p>The IOC container is actually a big factory, which is used to manage all our objects and dependencies. The principle is as follows：</p>
+<blockquote>
+<ul>
+<li><strong>Through reflection we can get all the information of the class. That is, the bean is instantiated through the reflection factory pattern in the previous chapter.</strong>  </li>
+<li><strong>Then describe the relationship between classes through configuration files or annotations.</strong></li>
+<li><strong>Spring can automatically perform DI through the configuration of developer and reflection technology.</strong>  </li>
+</ul>
+</blockquote>
+<h2 id="Spring-Container"><a href="#Spring-Container" class="headerlink" title="Spring Container"></a>Spring Container</h2><p>Spring container will be created in the <strong>refresh</strong> method. Now two Spring containers are defined, and the beans are actually produced from these two Spring containers:</p>
+<blockquote>
+<ul>
+<li><strong>BeanFactory</strong><br>For the BeanFactory container, when a client requests a bean that has not been initialized from the container, or when another bean that needs to be injected uninitialized dependencies bean, the container will call <strong>createBean</strong> method to instantiate it. So very few resources are used when the application starts. But the application runs slower.</li>
+<li><strong>ApplicationContext</strong><br>ApplicationContext implements the BeanFactory interface. Unlike BeanFactory, all the beans will be instantiated when the container is started. So it will take more time to start the application, but the application will run faster.  </li>
+</ul>
+</blockquote>
+<p>The production process of beans in Spring containers:</p>
+<blockquote>
+<ul>
+<li><strong>Create a bean definition registry inside the container based on the bean configuration information.</strong></li>
+<li><strong>Load, instantiate beans according to the registry, and establish the dependency relationship between beans.</strong></li>
+<li><strong>Put these ready beans in the Map cache pool and wait for the application to call.</strong>  </li>
+</ul>
+</blockquote>
+<p>Almost all applications currently use <strong>ApplicationContext</strong>!  </p>
+<h2 id="Bean-Life-Cycle"><a href="#Bean-Life-Cycle" class="headerlink" title="Bean Life Cycle"></a>Bean Life Cycle</h2><p>The Spring container can manage the life cycle of <strong>singleton</strong> scope beans. Under this scope, Spring can accurately know when the bean is created, when initialization is completed, and when it is destroyed.<br>But for Beans in <strong>prototype</strong> scope, Spring is only responsible for creating. When the container creates an instance of Bean, the instance of Bean is handed over to the client code management, and the Spring container will no longer track its life cycle. The Bean life cycle is shown in the figure below:<br><img src="/2020/07/15/Spring-Basic/Bean_life.png" srcset="/img/loading.gif" alt="Bean life cycle"></p>
+<blockquote>
+<ol>
+<li>Invoke the bean construction method or factory method to instantiate the bean according to the configuration.</li>
+<li></li>
+</ol>
+</blockquote>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Basic/">Basic</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Spring/">Spring</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/04/Blog-Template/">
+                        <span class="hidden-mobile">Blog Template</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Spring Basic - Bean&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
