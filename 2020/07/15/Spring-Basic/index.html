@@ -203,7 +203,7 @@
 </ul>
 </blockquote>
 <p>This blog will mainly explain the generation mode and life cycle of Bean. After that, it can be easier to understand the implementation mechanism of Spring IOC.</p>
-<h2 id="The-Generation-Mode-of-Bean"><a href="#The-Generation-Mode-of-Bean" class="headerlink" title="The Generation Mode of Bean"></a>The Generation Mode of Bean</h2><p>The creation of Spring Bean is a typical factory pattern. And the factory uses reflection technology to instantiate Bean. Compared with the ordinary factory model, the use of reflection technology can effectively improve the flexibility and maintainability of Spring source code.<br>First of all, let us take a look at the factory mode when <strong>reflection technology is not used</strong>.  </p>
+<h2 id="The-Instantiation-Mode-of-Bean"><a href="#The-Instantiation-Mode-of-Bean" class="headerlink" title="The Instantiation Mode of Bean"></a>The Instantiation Mode of Bean</h2><p>The creation of Spring Bean is a typical factory pattern. And the factory uses reflection technology to instantiate Bean. Compared with the ordinary factory model, the use of reflection technology can effectively improve the flexibility and maintainability of Spring source code.<br>First of all, let us take a look at the factory mode when <strong>reflection technology is not used</strong>.  </p>
 <pre><code class="hljs bash">interface fruit&#123;
     public abstract void eat();
 &#125; 
@@ -275,7 +275,21 @@ class hello&#123;
         &#125;
     &#125;
 &#125;</code></pre>
-<p>After using the reflection technology, we no longer need to rewrite the factory method, the reflection technology will map the internal attribute method of the class into a Java object based on the bytecode information of the class. <strong>So this kind of factory model is more maintainable for developer</strong>. The IOC container uses this factory model and produces the objects we need according to the definition of the configuration file. But compared to the normal way of producing objects, the speed of reflection generation will be <strong>slower</strong>.</p>
+<p>After using the reflection technology, we no longer need to rewrite the factory method, the reflection technology will map the internal attribute method of the class into a Java object based on the bytecode information of the class. <strong>So this kind of factory model is more maintainable for developer</strong>. The IOC container uses this factory model and produces the objects we need according to the definition of the configuration file. But compared to the normal way of producing objects, the speed of reflection generation will be <strong>slower</strong>. There are three ways to instantiate Bean:  </p>
+<blockquote>
+<ul>
+<li><strong>Constructor instantiation:</strong> Constructor instantiation means that the Spring container instantiates the bean through the default constructor in the class corresponding to the bean.</li>
+<li><strong>Static factory instantiation:</strong> In Spring, you can also use static factories to instantiate beans. This method needs to provide a static factory method to create an instance of Bean.</li>
+<li><strong>Instance factory instantiation:</strong> In Spring, there is another way to instantiate beans by using an instance factory. In this way, the factory class no longer uses static methods to create Bean instances, but directly creates Bean instances in member methods.  </li>
+</ul>
+</blockquote>
+<p>After instantiation, the IOC container needs to inject dependency into Bean, DI has two ways: </p>
+<blockquote>
+<ul>
+<li><strong>Property setter injection:</strong> Call the setter method of the bean to implement DI. </li>
+<li><strong>Constructor injection:</strong> Call the constructor with parameters, each parameter represents a dependency.</li>
+</ul>
+</blockquote>
 <h2 id="Inversion-of-Control-IOC"><a href="#Inversion-of-Control-IOC" class="headerlink" title="Inversion of Control - IOC"></a>Inversion of Control - IOC</h2><p>IOC (Inversion of Control) contains two aspects: </p>
 <blockquote>
 <ul>
@@ -370,7 +384,7 @@ class hello&#123;
 <h2 id="Life-Cycle-of-Bean"><a href="#Life-Cycle-of-Bean" class="headerlink" title="Life Cycle of Bean"></a>Life Cycle of Bean</h2><p>The Spring container can manage the life cycle of <strong>singleton</strong> scope beans. Under this scope, Spring can accurately know when the bean is created, when initialization is completed, and when it is destroyed.<br>But for Beans in <strong>prototype</strong> scope, Spring is only responsible for creating. When the container creates an instance of Bean, the instance of Bean is handed over to the client code management, and the Spring container will no longer track its life cycle. The Bean life cycle is shown in the figure below:<br><img src="/2020/07/15/Spring-Basic/Bean_life.png" srcset="/img/loading.gif" alt="Bean life cycle"></p>
 <blockquote>
 <ol>
-<li>First read the configuration file resource, get <strong>BeanDefinition</strong> according to the configuration file, and then use reflection technology to instantiate Bean according to BeanDefinition. For the BeanFactory container and the ApplicationContext container, the timing of instantiating Beans is different, and the differences are listed in the previous chapters.</li>
+<li>First read the configuration file resource, get <strong>BeanDefinition</strong> according to the configuration file, and then use <strong>Java Reflection API</strong> to instantiate Bean according to BeanDefinition. For the BeanFactory container and the ApplicationContext container, the timing of instantiating Beans is different, and the differences are listed in the previous chapters.</li>
 <li>The instantiated object is encapsulated in the <strong>BeanWrapper</strong> object, and the object is still in a native state at this time, and no dependency injection is performed. Next, according to the information in BeanDefinition, Spring completes the dependency injection through the interface for setting properties provided by BeanWrapper.</li>
 <li>If the Bean implements a series of <strong>Aware</strong> interfaces, the corresponding method will be called:<blockquote>
 <ul>
