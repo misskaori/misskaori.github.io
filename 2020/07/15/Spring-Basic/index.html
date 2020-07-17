@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="WeizheLIU">
   <meta name="keywords" content="">
-  <title>Spring Basic - Bean - misskaori</title>
+  <title>Spring Basic - Bean and IOC - misskaori</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -194,7 +194,7 @@
           <div class="post-content mx-auto" id="post">
             
             <article class="markdown-body">
-              <h1 id="Spring-Basic-Bean"><a href="#Spring-Basic-Bean" class="headerlink" title="Spring Basic - Bean"></a>Spring Basic - Bean</h1><p>The Spring framework consists of three core components:</p>
+              <h1 id="Spring-Basic-Bean-and-IOC"><a href="#Spring-Basic-Bean-and-IOC" class="headerlink" title="Spring Basic - Bean and IOC"></a>Spring Basic - Bean and IOC</h1><p>The Spring framework consists of three core components:</p>
 <blockquote>
 <ul>
 <li><strong>Context</strong><br>The role of Context is to discover the relationship between each Bean. And it will establish and maintain this relationship for beans. So Context is a collection of Bean relationships, this relationship combination is also known as the IOC container.  </li>
@@ -367,13 +367,38 @@ class hello&#123;
 </ul>
 </blockquote>
 <p>Almost all applications currently use <strong>ApplicationContext</strong>!  </p>
-<h2 id="Bean-Life-Cycle"><a href="#Bean-Life-Cycle" class="headerlink" title="Bean Life Cycle"></a>Bean Life Cycle</h2><p>The Spring container can manage the life cycle of <strong>singleton</strong> scope beans. Under this scope, Spring can accurately know when the bean is created, when initialization is completed, and when it is destroyed.<br>But for Beans in <strong>prototype</strong> scope, Spring is only responsible for creating. When the container creates an instance of Bean, the instance of Bean is handed over to the client code management, and the Spring container will no longer track its life cycle. The Bean life cycle is shown in the figure below:<br><img src="/2020/07/15/Spring-Basic/Bean_life.png" srcset="/img/loading.gif" alt="Bean life cycle"></p>
+<h2 id="Life-Cycle-of-Bean"><a href="#Life-Cycle-of-Bean" class="headerlink" title="Life Cycle of Bean"></a>Life Cycle of Bean</h2><p>The Spring container can manage the life cycle of <strong>singleton</strong> scope beans. Under this scope, Spring can accurately know when the bean is created, when initialization is completed, and when it is destroyed.<br>But for Beans in <strong>prototype</strong> scope, Spring is only responsible for creating. When the container creates an instance of Bean, the instance of Bean is handed over to the client code management, and the Spring container will no longer track its life cycle. The Bean life cycle is shown in the figure below:<br><img src="/2020/07/15/Spring-Basic/Bean_life.png" srcset="/img/loading.gif" alt="Bean life cycle"></p>
 <blockquote>
 <ol>
-<li>Invoke the bean construction method or factory method to instantiate the bean according to the configuration.</li>
-<li></li>
+<li>First read the configuration file resource, get <strong>BeanDefinition</strong> according to the configuration file, and then use reflection technology to instantiate Bean according to BeanDefinition. For the BeanFactory container and the ApplicationContext container, the timing of instantiating Beans is different, and the differences are listed in the previous chapters.</li>
+<li>The instantiated object is encapsulated in the <strong>BeanWrapper</strong> object, and the object is still in a native state at this time, and no dependency injection is performed. Next, according to the information in BeanDefinition, Spring completes the dependency injection through the interface for setting properties provided by BeanWrapper.</li>
+<li>If the Bean implements a series of <strong>Aware</strong> interfaces, the corresponding method will be called:<blockquote>
+<ul>
+<li>If the <strong>BeanNameAware</strong> interface is implemented, Spring will call the bean’s <strong>setBeanName()</strong> method to pass in the id value of the current bean.</li>
+<li>If the bean implements the <strong>BeanFactoryAware</strong> interface, Spring will call the <strong>setBeanFactory()</strong> method to pass in a reference to the current factory instance.</li>
+<li>If the Bean implements the <strong>ApplicationContextAware</strong> interface, Spring will call the <strong>setApplicationContext()</strong> method to pass in a reference to the current ApplicationContext instance.</li>
+</ul>
+</blockquote>
+</li>
+<li>After that, the bean object has been correctly constructed, but if you want to perform some custom processing before the object is used, you can achieve it through the BeanPostProcessor interface. If the beans implement the <strong>BeanPostProcess</strong> interface, Spring will call their <strong>postProcessBeforeInitialization()</strong> (pre-initialization) method. Its effect is to enhance the processing after the Bean instance is successfully created, such as modifying the Bean or adding a certain function.</li>
+<li>If the Bean implements the <strong>InitializingBean</strong> interface, Spring will call the <strong>afterPropertiesSet()</strong> method. This is an initialization method that is executed after all the properties of the Bean are set successfully.</li>
+<li>If the initialization method is specified by the <strong>init-method</strong> attribute in the <strong>configuration file</strong>, this initialization method will be called.</li>
+<li>Similar to <strong>4</strong>, after the Bean is initialized, if the <strong>BeanPostProcessor</strong> interface is implemented, Spring will call the initialization method <strong>postProcessAfterInitialization()</strong> (post-initialization) of the interface. At this point, the Bean can already be used by the application system.</li>
+<li>If the <strong>scope of the bean</strong> is specified as scope=”singleton” in <bean>, putting the bean into the cache pool of Spring container will trigger Spring’s life cycle management of the bean. If the scope of the bean is specified as scope=”prototype”, the bean is given to the caller. The caller manages the life cycle of the bean and Spring no longer manages the bean.</bean></li>
+<li>If the bean implements the <strong>DisposableBean</strong> interface, Spring will call the <strong>destroy()</strong> method to destroy the bean in Spring. If the destruction method of the bean is specified through the <strong>destory-method</strong> attribute in the configuration file, Spring will call this method to destroy the bean.  </li>
 </ol>
 </blockquote>
+<h2 id="Scope-of-Bean"><a href="#Scope-of-Bean" class="headerlink" title="Scope of Bean"></a>Scope of Bean</h2><p>When the Spring container initializes an instance of Bean, it also specifies the scope of the instance. Spring defines five scopes for Bean:  </p>
+<blockquote>
+<ul>
+<li><strong>singleton:</strong> Singleton mode, the bean defined by singleton has only one instance in the Spring container, which is the default scope of the bean.</li>
+<li><strong>prototype:</strong> Prototype mode, each time the Bean defined by prototype is obtained through the Spring container, the container will create a new Bean instance.</li>
+<li><strong>request:</strong> In an HTTP request, the container returns the same instance of the bean. For different HTTP requests, different instances will be returned. This scope is only valid in the current HTTP Request. </li>
+<li><strong>session:</strong> In an HTTP Session, the container will return the same instance of the bean. For different HTTP requests, different instances will be returned. This scope is only valid in the current HTTP Session. </li>
+<li><strong>global Session:</strong> In a global HTTP Session, the container will return the same instance of the bean. This scope is only valid when using portlet context.  </li>
+</ul>
+</blockquote>
+<p>Among the above five scopes, <strong>singleton</strong> and <strong>prototype</strong> are the two most commonly used. From the life cycle of Bean in the previous chapter, we can see that the life cycle of Bean is slightly different when setting different scopes for Bean. For <strong>request, session and global Session</strong> scope, Bean will be destroyed after its dependent environment disappears.</p>
 
             </article>
             <hr>
@@ -405,12 +430,6 @@ class hello&#123;
                   </div>
                   <div class="post-next col-6">
                     
-                    
-                      <a href="/2020/07/04/Blog-Template/">
-                        <span class="hidden-mobile">Blog Template</span>
-                        <span class="visible-mobile">Next</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
                     
                   </div>
                 </div>
@@ -546,7 +565,7 @@ class hello&#123;
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "Spring Basic - Bean&nbsp;",
+        "Spring Basic - Bean and IOC&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
