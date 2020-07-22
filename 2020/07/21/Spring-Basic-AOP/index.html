@@ -207,7 +207,7 @@
 <pre><code class="hljs bash">public interface IUserDao &#123;
     void save();
 &#125;</code></pre>
-<p><strong>Target Object: UserDao</strong>  </p>
+<p><strong>Target Class: UserDao</strong>  </p>
 <pre><code class="hljs bash">\\Implemented the IUserDao interface
 public class UserDao implements IUserDao &#123;
     @Override
@@ -261,7 +261,7 @@ End...</code></pre>
 <h3 id="JDK-Dynamic-Proxy"><a href="#JDK-Dynamic-Proxy" class="headerlink" title="JDK Dynamic Proxy"></a>JDK Dynamic Proxy</h3><p>JDK dynamic proxy has the following characteristics:</p>
 <blockquote>
 <ul>
-<li><strong>The proxy class does not need to manually implement interfaces and methods.</strong></li>
+<li><strong>The proxy class does not need to manually implement interfaces.</strong></li>
 <li><strong>The generation of proxy objects uses the JDK API to dynamically build proxy objects in computer memory.</strong>  </li>
 <li><strong>The target class must implement the interface.</strong>  </li>
 </ul>
@@ -331,6 +331,192 @@ End...</code></pre>
     public Object invoke(Object proxy, Method method, Object[] args)
         throws Throwable;
 &#125;</code></pre>
+<p>Next, I want to illustrate how to use newProxyInstance() to implement JDK dynamic proxy.<br><strong>Interface Design: Subject</strong> </p>
+<pre><code class="hljs bash">public interface Subject
+&#123;
+    public void rent();
+    
+    public void hello(String str);
+&#125;</code></pre>
+<p><strong>Target Class: RealSubject</strong> </p>
+<pre><code class="hljs bash">public class RealSubject implements Subject
+&#123;
+    @Override
+    public void rent()
+    &#123;
+        System.out.println(<span class="hljs-string">"I want to rent my house"</span>);
+    &#125;
+    
+    @Override
+    public void hello(String str)
+    &#123;
+        System.out.println(<span class="hljs-string">"hello: "</span> + str);
+    &#125;
+&#125;</code></pre>
+<p><strong>InvocationHandler Class: DynamicProxy</strong></p>
+<pre><code class="hljs bash">public class DynamicProxy implements InvocationHandler
+&#123;
+    //　The target object
+    private Object subject;
+    
+    //  Construction method
+    public DynamicProxy(Object subject)
+    &#123;
+        this.subject = subject;
+    &#125;
+    
+    //    When the proxy object calls the method of the target object, it will automatically jump to the invoke method of the InvocationHandler object.
+    @Override
+    public Object invoke(Object object, Method method, Object[] args)
+            throws Throwable
+    &#123;
+        //　　New features
+        System.out.println(<span class="hljs-string">"before rent house"</span>);
+        
+        System.out.println(<span class="hljs-string">"Method:"</span> + method);
+        
+        //    Method.invoke() can rely on reflection technology to create the method of the target object.
+        method.invoke(subject, args);
+        
+        //　　New features
+        System.out.println(<span class="hljs-string">"after rent house"</span>);
+        
+        <span class="hljs-built_in">return</span> null;
+    &#125;
+&#125;</code></pre>
+<p><strong>MainTest</strong></p>
+<pre><code class="hljs bash">public class MainTest
+&#123;
+    public static void main(String[] args)
+    &#123;
+        //    Target object
+        Subject realSubject = new RealSubject();
+        InvocationHandler handler = new DynamicProxy(realSubject);
+
+        /*
+         * To create our proxy object through the newProxyInstance() method of Proxy, <span class="hljs-built_in">let</span> us take a look at its three parameters:
+         * The first parameter handler.getClass().getClassLoader(), here we use the ClassLoader object of the handler class to load our proxy object.
+         * The second parameter realSubject.getClass().getInterfaces(), the interface we provide <span class="hljs-keyword">for</span> the proxy object here is the interface implemented by the real object, indicating that I want to proxy the real object, so that I can call the interface methods.
+         * The third parameter handler, here we associate this proxy object to the InvocationHandler object above.
+         */
+        Subject subject = (Subject)Proxy.newProxyInstance(handler.getClass().getClassLoader(), realSubject
+                .getClass().getInterfaces(), handler);
+        
+        //    Test
+        System.out.println(subject.getClass().getName());
+        subject.rent();
+        subject.hello(<span class="hljs-string">"world"</span>);
+    &#125;
+&#125;</code></pre>
+<p><strong>Result</strong></p>
+<pre><code class="hljs bash"><span class="hljs-variable">$Proxy0</span>
+
+before rent house
+Method:public abstract void com.xiaoluo.dynamicproxy.Subject.rent()
+I want to rent my house
+after rent house
+
+before rent house
+Method:public abstract void com.xiaoluo.dynamicproxy.Subject.hello(java.lang.String)
+hello: world
+after rent house</code></pre>
+<p><strong>Why can we convert the proxy object type to a Subject object?</strong></p>
+<blockquote>
+<ul>
+<li>The reason is that the proxy object implements those interfaces in the second parameter of newProxyInstance() method.  </li>
+</ul>
+</blockquote>
+<p><strong>Why does the getName() method of the proxy object return $Proxy0?</strong>  </p>
+<blockquote>
+<ul>
+<li>The proxy object created by newProxyInstance() is an object dynamically generated when JVM is running. It is not our InvocationHandler type, nor is it the type of the set of interfaces we defined, but an object that is dynamically generated during operation.  </li>
+</ul>
+</blockquote>
+<p><strong>Why the methods of the target object have been enhanced in the proxy object?</strong></p>
+<blockquote>
+<ul>
+<li>When the proxy object calls the method of the target object, it will automatically jump to the third parameter object of newProxyInstance(): <strong>InvocationHandler.invoke().</strong></li>
+</ul>
+</blockquote>
+<h3 id="CGLIB-Proxy"><a href="#CGLIB-Proxy" class="headerlink" title="CGLIB Proxy"></a>CGLIB Proxy</h3><p><strong>CGLIB proxy</strong> has the following characteristics:  </p>
+<blockquote>
+<ul>
+<li><strong>The target class does not need to implement an interface.</strong></li>
+<li><strong>Because the proxy class generated by the CGLIB proxy is a subclass of the target class. So the target class or target method cannot be modified with <em>‘final keyword’</em>.</strong>  </li>
+</ul>
+</blockquote>
+<p>To use CGLIB proxy, you first need to add dependencies:</p>
+<pre><code class="hljs bash">&lt;dependency&gt;
+    &lt;groupId&gt;cglib&lt;/groupId&gt;
+    &lt;artifactId&gt;cglib&lt;/artifactId&gt;
+    &lt;version&gt;2.2.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<p><strong>Target Class: UserDao</strong></p>
+<pre><code class="hljs bash">//Target class that does not implement any interfaces
+public class UserDao &#123;
+    public void <span class="hljs-function"><span class="hljs-title">save</span></span>() &#123;
+        System.out.println(<span class="hljs-string">"----Core Business----"</span>);
+    &#125;
+&#125;</code></pre>
+<p><strong>Proxy Class Factory: ProxyFactory</strong></p>
+<pre><code class="hljs bash">public class ProxyFactory implements MethodInterceptor&#123;
+    //Target object
+    private Object target;
+    public ProxyFactory(Object target) &#123;
+        this.target = target;
+    &#125;
+
+    //Create proxy object instance
+    public Object <span class="hljs-function"><span class="hljs-title">getProxyInstance</span></span>()&#123;
+        Enhancer en = new Enhancer();
+        en.setSuperclass(target.getClass());
+        //This is a callback <span class="hljs-keyword">function</span>
+        en.setCallback(this);
+        //Create proxy object
+        <span class="hljs-built_in">return</span> en.create();
+
+    &#125;
+
+    @Override
+    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable &#123;
+        //New features
+        System.out.println(<span class="hljs-string">"Begin..."</span>);
+
+        //The method of target object
+        Object returnValue = method.invoke(target, args);
+        
+        //New features
+        System.out.println(<span class="hljs-string">"End..."</span>);
+
+        <span class="hljs-built_in">return</span> returnValue;
+    &#125;
+&#125;</code></pre>
+<p><strong>MainTest</strong></p>
+<pre><code class="hljs bash">public class App &#123;
+    @Test
+    public void <span class="hljs-function"><span class="hljs-title">test</span></span>()&#123;
+        //Target object
+        UserDao target = new UserDao();
+
+        //Proxy object
+        UserDao proxy = (UserDao)new ProxyFactory(target).getProxyInstance();
+
+        //The method of proxy object
+        proxy.save();
+    &#125;
+&#125;</code></pre>
+<p><strong>Result</strong></p>
+<pre><code class="hljs bash">Begin...
+----Core Business----
+End...</code></pre>
+<p>CGLIB proxy has also been applied in Spring AOP.</p>
+<h2 id="Spring-AOP"><a href="#Spring-AOP" class="headerlink" title="Spring AOP"></a>Spring AOP</h2><p>In Spring AOP programming:</p>
+<blockquote>
+<ul>
+<li><strong>If the target object added to the container has an implementation interface, use the JDK dynamic proxy.</strong></li>
+<li><strong>If the target object does not implement the interface, use the CGLIB proxy.</strong></li>
+</ul>
+</blockquote>
 
             </article>
             <hr>
